@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dawesome</title>
+    <!-- TODO cite font awesome, or use a different one? -->
+    <link rel="icon" href="/static/img/wave-square-solid.svg">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/oscillator.js"></script>
+    <script src="/static/js/script.js"></script>
+</head>
+<body>
+    <h1>
+        dawesome
+    </h1>
+    <p>
+        super simple synthesizer
+    <p>
+    <details>
+        <summary>help</summary>
+            <p>
+                Play the keyboard like it's a bass guitar with strings EADG represented by keys z, a, q, and 1.
+            </p>
+            <p>
+                Change octave with <code>+</code> and <code>-</code>, or <code>Shift</code> and <code>CapsLock</code>.
+            </p>            
+    </details>
+
+    <details>
+        <summary>settings</summary>
+            <div class="setting"
+                title="Name notes with flats (b) instead of sharps (#)"
+            >
+                <label for="flats">Flats</label>
+                <input id="flats" type="checkbox">
+            </div>
+            <div class="setting"
+                title="Print verbose debug info to console"
+            >
+                <label for="debug">Debug</label>
+                <input id="debug" type="checkbox"
+                >
+            </div>
+            <div class="setting"
+                title="Print performance profile to console"
+            >
+                <label for="profile">Profile</label>
+                <input id="profile" type="checkbox"
+                >
+            </div>
+    </details>
+
+    
+    <!-- <button onclick="requestInput()">record</button>
+    <button onclick="beep(220)">play</button> -->
+
+    <section>
+        <h3>oscillator 1</h3>
+        <p id="playing">Press any key to start playing</p>
+        <div class="control"
+            title="Octave for the oscillator"
+        >
+            <label for="octave">Octave<label>
+            <button id="octaveDown">-</button>
+            <button id="octaveUp">+</button>
+            <span id="octave">4</span>
+        </div>
+        <div class="control">
+            <label for="wave">waveform</label>
+            <fieldset id="wave" title="Waveform for the oscillator">
+                <input type="radio" id="sine" name="waveform" value="sine">
+                <label for="sine">Sine</label><br>
+            
+                <input type="radio" id="square" name="waveform" value="square">
+                <label for="square">Square</label><br>
+            
+                <input type="radio" id="sawtooth" name="waveform" value="sawtooth">
+                <label for="sawtooth">Sawtooth</label><br>
+            
+                <input type="radio" id="triangle" name="waveform" value="triangle">
+                <label for="triangle">Triangle</label>
+            </fieldset>
+        </div>
+        <div class="control">
+            <label for="attack">A</label>
+            <input id="attack" type="range"
+                min="0" max="127" step="1"
+                title="Attack: time (ms) to first reach max volume (0=instant)"
+            >
+            <span id="attackDisplay"></span><span>ms</span>
+        </div>
+        <div class="control">
+            <label for="decay">D</label>
+            <input id="decay" type="range"
+                min="0" max="127" step="1"
+                title="Decay: time (ms) to fall from max volume to sustain volume"
+            >
+            <span id="decayDisplay"></span><span>ms</span>
+        </div>
+        <div class="control">
+            <label for="sustain">S</label>
+            <input id="sustain" type="range"
+                min="0" max="100" step="1"
+                title="Sustain: volume level while key held (percent of max)"
+            >
+            <span id="sustainDisplay"></span><span>%</span>
+        </div>
+        <div class="control">
+            <label for="release">R</label>
+            <input id="release" type="range"
+                min="0" max="127" step="1"
+                title="Release: time (ms) to reach silence after key release (0=instant)"
+            >
+            <span id="releaseDisplay"></span><span>ms</span>
+        </div>
+    </section>
+
+    <br>
+
+    <section>
+        <h3>output level</h3>
+        <div class="control">
+            <label for="volume">Vol</label>
+            <input id="volume" type="range"
+                min="0" max="100" value="50"
+                oninput="volumeValue.innerText = this.value"
+                title="Main volume for the synthesizer (% of max)"
+            >
+            <span id="volumeValue">50</span><span>%</span>
+        </div>
+    </section>
+
+</body>
+</html>

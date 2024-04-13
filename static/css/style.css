@@ -1,0 +1,26 @@
+:root {
+    --main-bg-color: black;
+    --main-text-color: cornflowerblue;
+    --main-accent-color: blueviolet;
+    --main-font: 'Helvetica Neue', sans-serif;
+    --main-font-size: 1.5rem;
+}
+
+body {
+    text-align: center;
+    color: var(--main-text-color);
+    background-color: var(--main-bg-color);
+    font-family: var(--main-font);
+    font-size: var(--main-font-size);
+}
+
+section, details {
+    margin: 1em;
+    outline: 2px solid var(--main-accent-color);
+}
+
+input {
+    margin: 0.4rem;
+    text-align: left;
+    font-size: .8em;
+}
