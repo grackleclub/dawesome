@@ -58,30 +58,36 @@
     <section>
         <h3>oscillator 1</h3>
         <p id="playing">Press any key to start playing</p>
-        <div class="control"
-            title="Octave for the oscillator"
-        >
+
+        <div class="control" title="Octave for the oscillator">
             <label for="octave">Octave<label>
-            <button id="octaveDown">-</button>
-            <button id="octaveUp">+</button>
+            <button id="octaveDown">
+                <img class="icon" src="static/img/arrow-down-solid.svg"/>
+            </button>
             <span id="octave">4</span>
+            <button id="octaveUp">
+                <img class="icon" src="static/img/arrow-up-solid.svg"/>
+            </button>
         </div>
+
         <div class="control">
             <label for="wave">waveform</label>
             <fieldset id="wave" title="Waveform for the oscillator">
-                <input type="radio" id="sine" name="waveform" value="sine">
-                <label for="sine">Sine</label><br>
-            
-                <input type="radio" id="square" name="waveform" value="square">
-                <label for="square">Square</label><br>
-            
-                <input type="radio" id="sawtooth" name="waveform" value="sawtooth">
-                <label for="sawtooth">Sawtooth</label><br>
-            
-                <input type="radio" id="triangle" name="waveform" value="triangle">
-                <label for="triangle">Triangle</label>
+                <button id="sine">
+                    <img class="icon" src="static/img/wave-sine-solid.svg"/>
+                </button>
+                <button id="square">
+                    <img class="icon" src="static/img/wave-square-solid.svg"/>
+                </button>
+                <button id="sawtooth">
+                    <img class="icon" src="static/img/wave-pulse-solid.svg"/>
+                </button>
+                <button id="triangle">
+                    <img class="icon" src="static/img/wave-triangle-solid.svg"/>
+                </button>
             </fieldset>
         </div>
+
         <div class="control">
             <label for="attack">A</label>
             <input id="attack" type="range"

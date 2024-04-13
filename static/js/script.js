@@ -63,7 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keyup', function(event) {
         noteStop(event)
     });
-    // octave up and down
+
+    // octave
     var octaveUpButton = document.getElementById("octaveUp");
     octaveUpButton.addEventListener("click", octaveUp);
     var octaveDownButton = document.getElementById("octaveDown");
@@ -73,15 +74,31 @@ document.addEventListener('DOMContentLoaded', function() {
     sliders = ["attack", "decay", "sustain", "release"];
     setupSliders(sliders);
 
-    if (config.debug) {
-        document.querySelectorAll('input[name="waveform"]').forEach(function(radio) {
-            radio.addEventListener('change', function() {
-                let selectedRadio = document.querySelector('input[name="waveform"]:checked');
-                this.wave = selectedRadio ? selectedRadio.value : 'sine';
-                console.log("waveform changed to " + this.wave);
+    // wave
+    document.querySelectorAll('#wave button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Remove the 'selected' class from all buttons
+            document.querySelectorAll('#wave button').forEach(function(btn) {
+                btn.classList.remove('selected');
             });
+    
+            // Add the 'selected' class to the clicked button
+            button.classList.add('selected');
+    
+            // Store the selected waveform
+            this.wave = button.id;
+            console.log("waveform changed to " + this.wave);
         });
-    }
+    });
+
+    document.querySelectorAll('#wave button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            this.wave = button.id;
+            if (config.debug) {
+                console.log("waveform changed to " + this.wave);
+            }
+        });
+    });
 });
 
 // sets up adsr sliders

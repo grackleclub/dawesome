@@ -1,5 +1,5 @@
 :root {
-    --main-bg-color: black;
+    --main-bg-color: darkblue;
     --main-text-color: cornflowerblue;
     --main-accent-color: blueviolet;
     --main-font: 'Helvetica Neue', sans-serif;
@@ -23,4 +23,14 @@ input {
     margin: 0.4rem;
     text-align: left;
     font-size: .8em;
+}
+
+.icon {
+    width: 1.5em;
+    height: 1.5em;
+    fill: pink;
+}
+
+#wave .selected {
+    background-color: var(--main-accent-color);
 }

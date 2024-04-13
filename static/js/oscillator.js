@@ -19,16 +19,8 @@ var keys = {};      // currently pressed keys
 var voices = {};    // active voices
 var octave = 4;     // current octave
 
-
-// var scale = {
-//     "attack": valueArray("exponential", 16, 5000),
-//     "decay": valueArray("exponential", 16, 5000),
-//     "sustain": valueArray("linear", 16, 100),
-//     "release": valueArray("exponential", 16, 5000),
-//     "volume": valueArray("exponential", 16, 100),
-// }
-
-
+// TODO this is static, but perhaps should be an object with defaults
+// doing so would allow presets to be saved and loaded
 var scale = {
     "attack": valueArray("exponential", 128, 5000),
     "decay": valueArray("exponential", 128, 5000),
@@ -46,8 +38,10 @@ function Note(frequency, octave, names) {
 
 // voice is a 
 function Voice() {
-    let selectedRadio = document.querySelector('input[name="waveform"]:checked');
-    this.wave = selectedRadio ? selectedRadio.value : 'sine';
+    let selectedWaveButton = document.querySelector('#wave .selected');
+    let selectedWave = selectedWaveButton ? selectedWaveButton.id : null;
+    console.log("Selected wave: " + selectedWave);
+    this.wave = selectedWave || "sine";
     this.v = document.getElementById('volume').value;
     this.a = scale["attack"][document.getElementById('attack').value];
     this.d = scale["decay"][document.getElementById('decay').value];
