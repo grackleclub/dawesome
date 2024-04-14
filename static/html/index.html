@@ -24,7 +24,33 @@
             </p>
             <p>
                 Change octave with <code>+</code> and <code>-</code>, or <code>Shift</code> and <code>CapsLock</code>.
-            </p>            
+            </p>
+            <table>
+                <tr>
+                    <th>key</th>
+                    <th>function</th>
+                </tr>
+                <!-- <tr>
+                    <td>z</td>
+                    <td>E</td>
+                </tr> -->
+                <tr>
+                    <td>+</td>
+                    <td>octave up</td>
+                </tr>
+                <tr>
+                    <td>-</td>
+                    <td>octave down</td>
+                </tr>
+                <tr>
+                    <td>Shift</td>
+                    <td>octave up</td>
+                </tr>
+                <tr>
+                    <td>CapsLock</td>
+                    <td>octave up</td>
+                </tr>
+            </table>
     </details>
 
     <details>
@@ -71,19 +97,19 @@
         </div>
 
         <div class="control">
-            <label for="wave">waveform</label>
             <fieldset id="wave" title="Waveform for the oscillator">
-                <button id="sine">
+                <label for="wave">wave</label>
+                <button id="sine" title="Sine wave">
                     <img class="icon" src="static/img/wave-sine-solid.svg"/>
                 </button>
-                <button id="square">
+                <button id="triangle" title="Triangle wave">
+                    <img class="icon" src="static/img/wave-triangle-solid.svg"/>
+                </button>
+                <button id="square" title="Square wave">
                     <img class="icon" src="static/img/wave-square-solid.svg"/>
                 </button>
-                <button id="sawtooth">
+                <button id="sawtooth" title="Sawtooth wave">
                     <img class="icon" src="static/img/wave-pulse-solid.svg"/>
-                </button>
-                <button id="triangle">
-                    <img class="icon" src="static/img/wave-triangle-solid.svg"/>
                 </button>
             </fieldset>
         </div>

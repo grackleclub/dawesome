@@ -42,11 +42,11 @@ function Voice() {
     let selectedWave = selectedWaveButton ? selectedWaveButton.id : null;
     console.log("Selected wave: " + selectedWave);
     this.wave = selectedWave || "sine";
-    this.v = document.getElementById('volume').value;
     this.a = scale["attack"][document.getElementById('attack').value];
     this.d = scale["decay"][document.getElementById('decay').value];
     this.s = scale["sustain"][document.getElementById('sustain').value];
     this.r = scale["release"][document.getElementById('release').value];
+    this.v = document.getElementById('volume').value;
     this.oscillator = context.createOscillator();
     this.oscillator.type = this.wave;
     this.gainNode = context.createGain();
@@ -208,11 +208,10 @@ R: ${v.r}ms
 
 function noteStop(event) {
     if (keys[event.key]) {
-        if (config.profile) console.time("noteStop") // profile
+        if (config.profile) console.time("noteStop")
+        if (config.debug) console.log(`${event.key} ⬆️`);
+
         keys[event.key] = false;
-        if (config.debug) {
-            console.log(`${event.key} ⬆️`);
-        }
         if (voices.hasOwnProperty(event.key)) {
             var v = voices[event.key];
             // release
@@ -221,7 +220,14 @@ function noteStop(event) {
             v.oscillator.stop(context.currentTime + rSec);
             delete voices[event.key];
         }
-        if (config.profile) console.timeEnd("noteStop") // profile
+
+        if (config.profile) console.timeEnd("noteStop")
+    }
+}
+
+function noteStopAll() {
+    for (var key in voices) {
+        noteStop({key: key});
     }
 }
 

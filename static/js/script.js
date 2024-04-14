@@ -56,10 +56,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (config.debug) console.log("octave up");
                 octaveUp();
                 break;
+            case "Escape":
+                if (config.debug) console.log("resetting octave");
+                noteStopAll();
+                break;
             default:
                 noteStart(event);
         }
     });
+
     document.addEventListener('keyup', function(event) {
         noteStop(event)
     });
@@ -85,11 +90,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add the 'selected' class to the clicked button
             button.classList.add('selected');
     
-            // Store the selected waveform
-            this.wave = button.id;
-            console.log("waveform changed to " + this.wave);
+            if (config.debug) {
+                console.log("waveform changed to " + button.id);
+            }
         });
     });
+    // Set default selected button
+    let defaultButton = document.getElementById('sawtooth');
+    defaultButton.classList.add('selected');
 
     document.querySelectorAll('#wave button').forEach(function(button) {
         button.addEventListener('click', function() {

@@ -34,3 +34,9 @@ input {
 #wave .selected {
     background-color: var(--main-accent-color);
 }
+
+table {
+    margin: 1em auto;
+    border-collapse: collapse;
+    width: 100%;
+}
