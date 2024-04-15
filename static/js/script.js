@@ -6,6 +6,7 @@ var config = {
     "debug": true,
     "profile": true,
     "flats": true,
+    "defaultWave": "triangle"
     // "noteNameStyle": "flats", // sharps or flats
     // "defaultA": 440
 }
@@ -96,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     // Set default selected button
-    let defaultButton = document.getElementById('sawtooth');
+    let defaultButton = document.getElementById(config.defaultWave);
     defaultButton.classList.add('selected');
 
     document.querySelectorAll('#wave button').forEach(function(button) {
