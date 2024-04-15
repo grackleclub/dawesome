@@ -1,7 +1,7 @@
 :root {
-    --main-bg-color: darkblue;
-    --main-text-color: cornflowerblue;
-    --main-accent-color: blueviolet;
+    --main-bg-color: #23272a;
+    --main-text-color: #dfe0e1;
+    --main-accent-color: #ff5b00;
     --main-font: 'Helvetica Neue', sans-serif;
     --main-font-size: 1.5rem;
 }
@@ -16,7 +16,7 @@ body {
 
 section, details {
     margin: 1em;
-    outline: 2px solid var(--main-accent-color);
+    /* outline: 2px solid var(--main-accent-color); */
 }
 
 input {
@@ -24,6 +24,19 @@ input {
     text-align: left;
     font-size: .8em;
 }
+
+.waveform {
+    display: block;
+    width: auto;
+}
+
+fieldset {
+    all: unset;
+    padding: 1rem;
+    /* justify-content: space-around; */
+    background-color: pink;
+}
+
 
 .icon {
     width: 1.5em;
