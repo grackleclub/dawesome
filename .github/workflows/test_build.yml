@@ -1,0 +1,45 @@
+# This doesn't build the binary, but after passing tests
+# a build and deploy is triggered by the infrastructure repo
+
+name: Go - Test & Build
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+  
+jobs:
+  test:
+    name: Test Go
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.x'
+
+      - name: Run Go Tests
+        run: go test -v
+
+  trigger-deploy:
+    name: Trigger Deploy with Repository Dispatch
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Dispatch
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.repos.createDispatchEvent({
+              owner: 'target-owner',
+              repo: 'target-repo',
+              event_type: 'deploy',
+              client_payload: {
+                sender: context.repo.owner,
+                repo: context.repo.repo
+              }
+            });
