@@ -35,6 +35,9 @@ jobs:
         run: |
           # GitHub CLI api
           # https://cli.github.com/manual/gh_api
+          gh
+          echo "is this working at all?"
+          
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
