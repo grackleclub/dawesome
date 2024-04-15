@@ -29,11 +29,12 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Repository Dispatch
+      - name: Send Repository Dispatch from GitHub CLI
+        env:
+          GH_TOKEN: ${{ github.token }}          
         run: |
           # GitHub CLI api
           # https://cli.github.com/manual/gh_api
-          
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
