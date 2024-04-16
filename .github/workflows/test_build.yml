@@ -31,7 +31,10 @@ jobs:
       - name: Build Go
         # build is currently not saved
         run: go build
-
+  trigger:
+    name: Trigger Redeploy
+    runs-on: ubuntu-latest
+    steps:
       - name: Trigger Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
