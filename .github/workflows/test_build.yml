@@ -27,7 +27,7 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GH_TOKEN }}
           repository: ddbgio/ddbg
           event-type: deploy-dawesome
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
