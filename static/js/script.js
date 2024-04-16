@@ -89,12 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let defaultSource = document.getElementById("qwerty");
     defaultSource.classList.add('selected');
     
-
-    document.getElementById('qwerty').addEventListener('click', function() {
-        this.classList.add('selected');
-    });
-    // TODO, setup multiple selections once they are available
-
     // octave
     var octaveUpButton = document.getElementById("octaveUp");
     octaveUpButton.addEventListener("click", octaveUp);
