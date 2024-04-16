@@ -41,7 +41,7 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }} # requires PAT
           repository: ddbgio/ddbg
-          event-type: deploy-dawesome
+          event-type: deploy-service
           client-payload: >
             {
               "service": "dawesome",
