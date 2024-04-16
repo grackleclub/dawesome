@@ -14,7 +14,7 @@ on:
       - '.github/**'
   
 jobs:
-  test:
+  go:
     name: Test Go
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +28,11 @@ jobs:
       - name: Run Go Tests
         run: go test -v
 
-      - name: Repository Dispatch
+      - name: Build Go
+        # build is currently not saved
+        run: go build
+
+      - name: Trigger Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.GH_TOKEN }}
