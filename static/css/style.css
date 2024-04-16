@@ -2,6 +2,7 @@
     --main-bg-color: #23272a;
     --main-text-color: #dfe0e1;
     --main-accent-color: #ff5b00;
+    --main-accent-secondary-color: #FFD3BB;
     --main-font: 'Helvetica Neue', sans-serif;
     --main-font-size: 1.5rem;
 }
@@ -12,11 +13,64 @@ body {
     background-color: var(--main-bg-color);
     font-family: var(--main-font);
     font-size: var(--main-font-size);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* TODO this is terrible */
+h1, h2, h3, h4 {
+    all: unset;
+    /* font-size: 1.5em; */
+    text-align: left;
+    padding: .5em;
+}
+h1 {
+    font-size: 2em;
+    text-align: center;
+}
+h2 {
+    font-size: 1.5em;
+    text-align: center;
+}
+h3 {
+    font-size: 1.25em;
+    text-align: center;
+}
+h4 {
+    font-size: 1.25em;
+    text-align: left;
+}
+
+
+summary {
+    text-align: left;
+}
+
+p, td {
+    text-align: left;
+    font-size: .7em;
+}
+
+td {
+    padding: .5rem;
+    border: 1px solid var(--main-accent-secondary-color);
+}
+
+ul {
+    list-style-type: none;
+    text-align: left;
 }
 
 section, details {
     margin: 1em;
-    /* outline: 2px solid var(--main-accent-color); */
+    padding: 1em;
+    width: 14em;
+    /* max-width: 12em; */
+    /* min-width: 4em; */
+    border-radius: 20px;
+    outline: 1px solid var(--main-accent-color);
 }
 
 input {
@@ -48,15 +102,18 @@ fieldset {
     /* background-color: pink; */
 }
 
-
 .icon {
     all: unset;
     width: 1.25rem;
     height: 1.25rem;
-    /* fill: pink; */
 }
 
 #wave .selected {
+    background-color: var(--main-accent-color);
+}
+
+/* TODO why doesn't this work? */
+#input .selected {
     background-color: var(--main-accent-color);
 }
 
@@ -64,4 +121,12 @@ table {
     margin: 1em auto;
     border-collapse: collapse;
     width: 100%;
+}
+
+.setting {
+    margin: 10px 0;
+}
+
+.setting input[type="checkbox"] {
+    margin-right: 5px;
 }

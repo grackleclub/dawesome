@@ -6,3 +6,6 @@ super simple synthesizer
 
 ## Future Reading
 https://wasmbyexample.dev/examples/reading-and-writing-audio/reading-and-writing-audio.go.en-us.html
+
+## Acknowledgements
+Icons by Font Awesome

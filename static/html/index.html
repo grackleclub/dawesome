@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dawesome</title>
-    <!-- TODO cite font awesome, or use a different one? -->
-    <link rel="icon" href="/static/img/wave-square-solid.svg">
+    <link rel="icon" href="/static/img/dawesome-favicon.svg">
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="/static/js/oscillator.js"></script>
     <script src="/static/js/script.js"></script>
@@ -14,76 +13,36 @@
     <h1>
         dawesome
     </h1>
-    <p>
+    <h4>
         super simple synthesizer
-    <p>
-    <details>
-        <summary>help</summary>
-            <p>
-                Play the keyboard like it's a bass guitar with strings EADG represented by keys z, a, q, and 1.
-            </p>
-            <p>
-                Change octave with <code>+</code> and <code>-</code>, or <code>Shift</code> and <code>CapsLock</code>.
-            </p>
-            <table>
-                <tr>
-                    <th>key</th>
-                    <th>function</th>
-                </tr>
-                <!-- <tr>
-                    <td>z</td>
-                    <td>E</td>
-                </tr> -->
-                <tr>
-                    <td>+</td>
-                    <td>octave up</td>
-                </tr>
-                <tr>
-                    <td>-</td>
-                    <td>octave down</td>
-                </tr>
-                <tr>
-                    <td>Shift</td>
-                    <td>octave up</td>
-                </tr>
-                <tr>
-                    <td>CapsLock</td>
-                    <td>octave up</td>
-                </tr>
-            </table>
-    </details>
-
-    <details>
-        <summary>settings</summary>
-            <div class="setting"
-                title="Name notes with flats (b) instead of sharps (#)"
-            >
-                <label for="flats">Flats</label>
-                <input id="flats" type="checkbox">
-            </div>
-            <div class="setting"
-                title="Print verbose debug info to console"
-            >
-                <label for="debug">Debug</label>
-                <input id="debug" type="checkbox"
-                >
-            </div>
-            <div class="setting"
-                title="Print performance profile to console"
-            >
-                <label for="profile">Profile</label>
-                <input id="profile" type="checkbox"
-                >
-            </div>
-    </details>
-
+    </h4>
     
     <!-- <button onclick="requestInput()">record</button>
     <button onclick="beep(220)">play</button> -->
 
     <section>
-        <h3>oscillator 1</h3>
-        <p id="playing">Press any key to start playing</p>
+        <h3>input</h3>
+
+        <div id="input" class="control" title="Select the source for note input">
+            <button id="qwerty" title="QWERTY keyboard input">
+                <img class="icon" src="static/img/keyboard-regular.svg"/>
+            </button>
+            <!-- <button id="screen" title="Touch screen input">
+                <img class="icon" src="static/img/mobile-screen-regular.svg"/>
+            </button>
+            <button id="midi" title="MIDI input">
+                <img class="icon" src="static/img/piano-keyboard-sharp-light.svg"/>
+            </button>
+            <button id="mic" title="Microphone input">
+                <img class="icon" src="static/img/microphone-solid.svg"/>
+            </button> -->
+        </div>
+
+        <h4 id="playing">Press any key to start playing</h4>
+    </section>
+
+    <section>
+        <h3>oscillator</h3>
 
         <div class="control octave" title="Octave for the oscillator">
             <label for="octave">Octave<label>
@@ -114,7 +73,7 @@
             </fieldset>
         </div>
 
-        <div class="control">
+        <div class="control envelope">
             <label for="attack">A</label>
             <input id="attack" type="range"
                 min="0" max="127" step="1"
@@ -151,7 +110,7 @@
     <br>
 
     <section>
-        <h3>output level</h3>
+        <h3>output</h3>
         <div class="control">
             <label for="volume">Vol</label>
             <input id="volume" type="range"
@@ -162,6 +121,67 @@
             <span id="volumeValue">50</span><span>%</span>
         </div>
     </section>
+
+    <details>
+        <summary>help</summary>
+            <p>
+                Play the keyboard like it's a bass guitar with strings EADG represented by keys z, a, q, and 1.
+            </p>
+            <table>
+                <tr>
+                    <th>key</th>
+                    <th>function</th>
+                </tr>
+                <tr>
+                    <td><code>Esc</code></td>
+                    <td>Stop all notes (begins release)</td>
+                </tr>
+                <tr>
+                    <td><code>+</code></td>
+                    <td>octave up</td>
+                </tr>
+                <tr>
+                    <td><code>-</code></td>
+                    <td>octave down</td>
+                </tr>
+                <tr>
+                    <td><code>Shift</code></td>
+                    <td>octave up (temporary)</td>
+                </tr>
+                <tr>
+                    <td><code>CapsLock</code></td>
+                    <td>octave up (one octave while active)</td>
+                </tr>
+            </table>
+    </details>
+
+    <details>
+        <summary>settings</summary>
+            <ul>
+                <li class="setting"
+                        title="Name notes with flats (b) instead of sharps (#)"
+                >
+                    <input id="flats" type="checkbox">
+                    <label for="flats">Flats</label>
+                </li>
+                <li class="setting"
+                        title="Print verbose debug info to console"
+                >
+                    <input id="debug" type="checkbox">
+                    <label for="debug">Debug</label>
+                </li>
+                <li class="setting"
+                        title="Print performance profile to console"
+                >
+                    <input id="profile" type="checkbox">
+                    <label for="profile">Profile</label>
+                </li>
+            </ul>
+    </details>
+
+    <footer>
+        <img class="icon" src="/static/img/duck-light.svg" alt="">
+    </footer>
 
 </body>
 </html>

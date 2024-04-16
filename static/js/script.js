@@ -65,10 +65,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 noteStart(event);
         }
     });
-
     document.addEventListener('keyup', function(event) {
         noteStop(event)
     });
+
+    // input
+    document.querySelectorAll('#input button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Remove the 'selected' class from all buttons
+            document.querySelectorAll('#input button').forEach(function(btn) {
+                btn.classList.remove('selected');
+            });
+    
+            // Add the 'selected' class to the clicked button
+            button.classList.add('selected');
+    
+            if (config.debug) {
+                console.log("input source changed to " + button.id);
+            }
+        });
+    });
+    // Set default selected button for source
+    let defaultSource = document.getElementById("qwerty");
+    defaultSource.classList.add('selected');
+    
+
+    document.getElementById('qwerty').addEventListener('click', function() {
+        this.classList.add('selected');
+    });
+    // TODO, setup multiple selections once they are available
 
     // octave
     var octaveUpButton = document.getElementById("octaveUp");
@@ -96,21 +121,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    // Set default selected button
+    // Set default selected button for wave
     let defaultButton = document.getElementById(config.defaultWave);
     defaultButton.classList.add('selected');
-
-    document.querySelectorAll('#wave button').forEach(function(button) {
-        button.addEventListener('click', function() {
-            this.wave = button.id;
-            if (config.debug) {
-                console.log("waveform changed to " + this.wave);
-            }
-        });
-    });
 });
 
-// sets up adsr sliders
+// sets up ADSR sliders
 function setupSliders(sliders) {
     // loop through sliders
     sliders.forEach(function(sliderName) {
