@@ -41,12 +41,12 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           repository: ddbgio/ddbg
           event-type: deploy-service
-          client-payload: |
-            '{
+          client-payload: >
+            {
               "service": "dawesome", 
               "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}"
-            }'
+            }
 
   # trigger-deploy:
   #   name: Trigger Deploy with Repository Dispatch
