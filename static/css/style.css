@@ -2,9 +2,10 @@
     --main-bg-color: #23272a;
     --main-text-color: #dfe0e1;
     --main-accent-color: #ff5b00;
-    --main-accent-secondary-color: #FFD3BB;
-    --main-font: 'Helvetica Neue', sans-serif;
-    --main-font-size: 1.5rem;
+    --main-accent-secondary-color: #b39280;
+    --main-font: 'Cairo', sans-serif;
+    --main-font-size: 1.25rem;
+    --main-font-weight: 400;
 }
 
 body {
@@ -13,36 +14,109 @@ body {
     background-color: var(--main-bg-color);
     font-family: var(--main-font);
     font-size: var(--main-font-size);
+    font-weight: var(--main-font-weight);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
+    margin: auto;
 }
 
-/* TODO this is terrible */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: .25rem;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 400;
+}
+
+h5 {
+    padding: .5rem;
+}
+
+
+
+section, details {
+    margin: .5rem;
+    padding: .35rem;
+    min-width: 20rem;
+    border-radius: 20px;
+    outline: 1px solid var(--main-accent-color);
+    /* gap: 1.5rem; */
+}
+
+button {
     all: unset;
-    /* font-size: 1.5em; */
-    text-align: left;
-    padding: .5em;
-}
-h1 {
-    font-size: 2em;
-    text-align: center;
-}
-h2 {
-    font-size: 1.5em;
-    text-align: center;
-}
-h3 {
-    font-size: 1.25em;
-    text-align: center;
-}
-h4 {
-    font-size: 1.25em;
-    text-align: left;
+    margin: 0 .5rem;
+    border-radius: 20%;
+    background-color: grey;
+    padding: .35rem .5rem 0;
 }
 
+.octave {
+    padding: .5rem;
+}
+
+.waveform {
+    display: grid;
+}
+
+fieldset {
+    all: unset;
+    padding: .5rem;
+    /* justify-content: space-around; */
+    /* background-color: pink; */
+}
+
+.icon {
+    all: unset;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+#wave .selected {
+    background-color: var(--main-accent-color);
+}
+
+/* TODO why doesn't this work? */
+#input .selected {
+    background-color: var(--main-accent-color);
+}
+
+.envelope {
+    display: flex;
+    flex-wrap: nowrap;
+    /* align-items: center; */
+    justify-content: center;
+    align-self: center;
+}
+
+input {
+    appearance: unset;
+    width: 8rem;
+    height: 1rem;
+    background: var(--main-accent-secondary-color);
+    /* outline: 1px solid var(--main-accent-color); */
+    margin: .5em;
+    /* border-radius: 50%; */
+}
+
+input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background: var(--main-accent-color);
+}
 
 summary {
     text-align: left;
@@ -61,60 +135,6 @@ td {
 ul {
     list-style-type: none;
     text-align: left;
-}
-
-section, details {
-    margin: 1em;
-    padding: 1em;
-    width: 14em;
-    /* max-width: 12em; */
-    /* min-width: 4em; */
-    border-radius: 20px;
-    outline: 1px solid var(--main-accent-color);
-}
-
-input {
-    margin: 0.4rem;
-    text-align: left;
-    font-size: .8em;
-}
-
-button {
-    all: unset;
-    margin: 0 .5rem;
-    border-radius: 30%;
-    background-color: grey;
-    padding: 0 .5rem;
-}
-
-.octave {
-    padding: 1rem;
-}
-
-.waveform {
-    display: grid;
-}
-
-fieldset {
-    all: unset;
-    padding: 1rem;
-    /* justify-content: space-around; */
-    /* background-color: pink; */
-}
-
-.icon {
-    all: unset;
-    width: 1.25rem;
-    height: 1.25rem;
-}
-
-#wave .selected {
-    background-color: var(--main-accent-color);
-}
-
-/* TODO why doesn't this work? */
-#input .selected {
-    background-color: var(--main-accent-color);
 }
 
 table {

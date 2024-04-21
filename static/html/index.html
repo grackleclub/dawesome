@@ -6,6 +6,9 @@
     <title>dawesome</title>
     <link rel="icon" href="/static/img/dawesome-favicon.svg">
     <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
     <script src="/static/js/oscillator.js"></script>
     <script src="/static/js/script.js"></script>
 </head>
@@ -13,9 +16,9 @@
     <h1>
         dawesome
     </h1>
-    <h4>
+    <h5>
         super simple synthesizer
-    </h4>
+    </h5>
     
     <!-- <button onclick="requestInput()">record</button>
     <button onclick="beep(220)">play</button> -->
@@ -81,7 +84,7 @@
             >
             <span id="attackDisplay"></span><span>ms</span>
         </div>
-        <div class="control">
+        <div class="control envelope">
             <label for="decay">D</label>
             <input id="decay" type="range"
                 min="0" max="127" step="1"
@@ -89,7 +92,7 @@
             >
             <span id="decayDisplay"></span><span>ms</span>
         </div>
-        <div class="control">
+        <div class="control envelope">
             <label for="sustain">S</label>
             <input id="sustain" type="range"
                 min="0" max="100" step="1"
@@ -97,7 +100,7 @@
             >
             <span id="sustainDisplay"></span><span>%</span>
         </div>
-        <div class="control">
+        <div class="control envelope">
             <label for="release">R</label>
             <input id="release" type="range"
                 min="0" max="127" step="1"
@@ -107,11 +110,9 @@
         </div>
     </section>
 
-    <br>
-
     <section>
         <h3>output</h3>
-        <div class="control">
+        <div class="control ">
             <label for="volume">Vol</label>
             <input id="volume" type="range"
                 min="0" max="100" value="50"
