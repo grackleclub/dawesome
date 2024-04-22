@@ -35,6 +35,7 @@ jobs:
   trigger:
     name: Trigger Redeploy
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # only actually deploy on main
     steps:
       - name: Trigger Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
