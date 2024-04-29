@@ -158,24 +158,27 @@
 
     <details>
         <summary>settings</summary>
-            <ul>
-                <li class="setting"
-                        title="Name notes with flats (b) instead of sharps (#)"
-                >
-                    <input id="flats" type="checkbox">
-                    <label for="flats">Flats</label>
+            <ul class="toggle_box">
+                <li>
+                    <span>Flats</span>
+                    <label for="flats" class="setting" title="Name notes with flats (b) instead of sharps (#)">
+                        <input id="flats" type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
                 </li>
-                <li class="setting"
-                        title="Print verbose debug info to console"
-                >
-                    <input id="debug" type="checkbox">
-                    <label for="debug">Debug</label>
+                <li>
+                    <span>Debug</span>
+                    <label for="debug" class="setting" title="Print verbose debug info to console">
+                        <input id="debug" type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
                 </li>
-                <li class="setting"
-                        title="Print performance profile to console"
-                >
-                    <input id="profile" type="checkbox">
-                    <label for="profile">Profile</label>
+                <li>
+                    <span>Profile</span>
+                    <label for="profile" class="setting" title="Print performance profile to console">
+                        <input id="profile" type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
                 </li>
             </ul>
     </details>
