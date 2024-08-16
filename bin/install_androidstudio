@@ -27,8 +27,7 @@ else
 
     # unpack that binary
     echo "Unpacking $PATH_TO_AS to $DEST_DIR ..."
-    tar -xzf "$PATH_TO_AS" -C "$DEST_DIR"
-    if [ $? -ne 0 ]; then
+    if ! tar -xzf "$PATH_TO_AS" -C "$DEST_DIR"; then
         echo "Failed to unpack $PATH_TO_AS."
         exit 1
     fi
@@ -38,9 +37,8 @@ fi
 # Install required libraries
 # https://developer.android.com/studio/install#64bit-libs
 echo "Installing Android Studio required supplemental libraries"
-sudo apt-get install -y \
-    libc6:i386 libncurses6:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386
-if [ $? -ne 0 ]; then
+if ! sudo apt-get install -y \
+    libc6:i386 libncurses6:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386; then
     echo "Failed to install supplimental libs"
     exit 1
 fi

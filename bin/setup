@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# Ensure command run sudo
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root or sudo"
+    exit 1
+else
+    echo "Running as root or sudo"
+fi
+
+
 ./bin/install_flutter_prereq
 if [ ! $? ]; then
     echo "Unable to install Flutter prereqs."

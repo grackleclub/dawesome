@@ -19,7 +19,7 @@ else
 
     echo "Unpacking $PATH_TO_FL to $DEST_DIR"
     tar -xf "$PATH_TO_FL" -C "$DEST_DIR"
-    if [ $? -ne 0 ]; then
+if [ ! $? ]; then
         echo "Failed to unpack $PATH_TO_FL."
         exit 1
     fi
@@ -45,4 +45,4 @@ fi
 echo "Ready to go with Flutter and Dart!"; echo
 echo "Make sure to add to PATH: $BIN_PATHS"; echo
 
-env PATH=$PATH:$BIN_PATHS flutter doctor
+env PATH="$PATH:$BIN_PATHS" flutter doctor

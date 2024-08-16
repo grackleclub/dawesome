@@ -3,19 +3,25 @@
 # NOTE: 'libncurses5' fails when used like documentation suggests
 # but manually changing it to 'libncurses6' works fine
 
+# Ensure command run sudo
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root or sudo"
+    exit 1
+else
+    echo "Running as root or sudo"
+fi
+
 
 # https://docs.flutter.dev/get-started/install/linux/android
 # go slow so we can see it working
 # TODO remove all this before prod ready
 verify() {
-    printf "🔍 Verifying $1 ... "
-    which $1
-    if [ $? -ne 0 ]; then
+    printf "🔍 Verifying %s ... " "$1"
+    if ! which "$1"; then
         echo "❌ $1 not installed."
         exit 1
-    else
-        echo "✅ $1 installed."
     fi
+    echo "✅ $1 installed."
 }
 
 echo "🦋 Installing Flutter ..."
@@ -29,32 +35,26 @@ verify which
 
 #update and install packages curl, git, unzip, xz-utils, zip, libglu1-mesa
 echo "Updating and upgrading packages ..."
-apt-get update -y && sudo apt-get upgrade -y;
-if [ $? -ne 0 ]; then
+if ! apt-get update -y && sudo apt-get upgrade -y; then
     echo "❌ Failed to update and upgrade packages."
     exit 1
-else
-    echo "✅ Packages updated and upgraded."
 fi
+echo "✅ Packages updated and upgraded."
 
 echo "Installing curl, git, unzip, xz-utils, zip, libglu1-mesa ..."
-apt-get install -y curl git unzip xz-utils zip libglu1-mesa
-if [ $? -ne 0 ]; then
+if ! apt-get install -y curl git unzip xz-utils zip libglu1-mesa; then
     echo "❌ Failed to install curl, git, unzip, xz-utils, zip, libglu1-mesa."
     exit 1
-else
-    echo "✅ curl, git, unzip, xz-utils, zip, libglu1-mesa installed."
 fi
+echo "✅ curl, git, unzip, xz-utils, zip, libglu1-mesa installed."
 
 #install prerequisites for Android Studio
-apt-get install \
+if ! apt-get install \
     libc6:amd64 libstdc++6:amd64 \
-    libbz2-1.0:amd64 libncurses6:amd64
-if [ $? -ne 0 ]; then
+    libbz2-1.0:amd64 libncurses6:amd64; then
     echo "❌ Failed to install prerequisites for Android Studio."
     exit 1
-else
-    echo "✅ Prerequisites for Android Studio installed."
 fi
+echo "✅ Prerequisites for Android Studio installed."
 
 echo "✅ $0 complete!"
