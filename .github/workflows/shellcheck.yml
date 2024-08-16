@@ -1,7 +1,7 @@
 name: shellcheck
 
 on:
-  [workflow_dispatch]:
+  workflow_dispatch:
   push:
   pull_request:
 
