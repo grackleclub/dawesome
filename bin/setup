@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+./bin/install_flutter_prereq
+if [ ! $? ]; then
+    echo "Unable to install Flutter prereqs."
+    exit 1
+fi
+
+./bin/install_androidstudio
+if [ ! $? ]; then
+    echo "Unable to install android-studio."
+    exit 1
+fi
+
+./bin/install_flutter
+if [ ! $? ]; then
+    echo "Unable to install flutter and dart"
+    exit 1
+fi
+
+echo "Setup complete!"

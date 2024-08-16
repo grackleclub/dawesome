@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# NOTE: 'libncurses5' fails when used like documentation suggests
+# but manually changing it to 'libncurses6' works fine
+
+
 # https://docs.flutter.dev/get-started/install/linux/android
 # go slow so we can see it working
 # TODO remove all this before prod ready

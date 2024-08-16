@@ -1,54 +1,48 @@
 #!/usr/bin/env bash
 
-# https://docs.flutter.dev/get-started/install/linux/android
-verify() {
-    printf "🔍 Verifying $1 ... "
-    which $1
-    if [ $? -ne 0 ]; then
-        echo "❌ $1 not installed."
+DEST_DIR="/usr/bin"
+
+# Install Flutter (if not already)
+if [ -d "$DEST_DIR/flutter" ]; then
+    echo "Flutter already installed."
+else
+    # require arg with path to binary
+    echo "Installing Flutter ..."
+    if [ -z "$1" ]; then
+        echo "Must provide path to tarball if not already installled."
+        echo "dowload at \
+            https://docs.flutter.dev/get-started/install/linux/android"
+        echo "Usage: $0 <path-to-flutter-tarball>"
         exit 1
-    else
-        echo "✅ $1 installed."
     fi
-}
+    PATH_TO_FL="$1"
 
-echo "🦋 Installing Flutter ..."
-
-echo "Veryfying prerequisites ..."
-verify bash
-verify file
-verify mkdir
-verify rm
-verify which
-
-# update and install packages curl, git, unzip, xz-utils, zip, libglu1-mesa
-echo "Updating and upgrading packages ..."
-apt-get update -y && sudo apt-get upgrade -y;
-if [ $? -ne 0 ]; then
-    echo "❌ Failed to update and upgrade packages."
-    exit 1
-else
-    echo "✅ Packages updated and upgraded."
+    echo "Unpacking $PATH_TO_FL to $DEST_DIR"
+    tar -xf "$PATH_TO_FL" -C "$DEST_DIR"
+    if [ $? -ne 0 ]; then
+        echo "Failed to unpack $PATH_TO_FL."
+        exit 1
+    fi
+    echo "Flutter unpacked!"
 fi
 
-echo "Installing curl, git, unzip, xz-utils, zip, libglu1-mesa ..."
-apt-get install -y curl git unzip xz-utils zip libglu1-mesa
-if [ $? -ne 0 ]; then
-    echo "❌ Failed to install curl, git, unzip, xz-utils, zip, libglu1-mesa."
+BIN_PATHS="$DEST_DIR/flutter/bin"
+FLUTTER_PATH="$BIN_PATHS/flutter"
+DART_PATH="$BIN_PATHS/dart"
+
+$FLUTTER_PATH --version
+if [ ! $? ]; then
+    echo "Flutter not installed successfully."
     exit 1
-else
-    echo "✅ curl, git, unzip, xz-utils, zip, libglu1-mesa installed."
 fi
 
-#install prerequisites for Android Studio
-apt-get install \
-    libc6:amd64 libstdc++6:amd64 \
-    libbz2-1.0:amd64 libncurses6:amd64
-if [ $? -ne 0 ]; then
-    echo "❌ Failed to install prerequisites for Android Studio."
+$DART_PATH --version
+if [ ! $? ]; then
+    echo "Dart not installed successfully."
     exit 1
-else
-    echo "✅ Prerequisites for Android Studio installed."
 fi
 
-echo "✅ $0 complete!"
+echo "Ready to go with Flutter and Dart!"; echo
+echo "Make sure to add to PATH: $BIN_PATHS"; echo
+
+env PATH=$PATH:$BIN_PATHS flutter doctor
