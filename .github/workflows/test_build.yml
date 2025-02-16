@@ -1,7 +1,7 @@
 # This doesn't build the binary, but after passing tests
 # a build and deploy is triggered by the infrastructure repo
 
-name: Go - Test & Build
+name: Test & Build (& deploy on main)
 on:
   workflow_dispatch:
   push:
