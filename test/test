@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+echo "Running shellcheck on bin/ ..."
+if ! shellcheck ./bin/*; then
+    EXIT_CODE="$?"
+    echo "Shellcheck failed."
+    exit "$EXIT_CODE"
+fi
+echo "Shellcheck passed!"
