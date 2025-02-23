@@ -15,3 +15,7 @@ Play it on the web at https://dawesome.app
 
 ## Acknowledgements
 Icons by Font Awesome
+
+## Notes
+android studio found in `usr/local/android-studio`
+run `studio.sh`

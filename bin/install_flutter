@@ -3,13 +3,13 @@
 DEST_DIR="/usr/bin"
 
 # Install Flutter (if not already)
-if [ -d "$DEST_DIR/flutter" ]; then
+if [ -d "$DEST_DIR/flutter/bin" ]; then
     echo "Flutter already installed."
 else
     # require arg with path to binary
     echo "Installing Flutter ..."
     if [ -z "$1" ]; then
-        echo "Must provide path to tarball if not already installled."
+        echo "Must provide path to tarball if not already installed."
         echo "dowload at \
             https://docs.flutter.dev/get-started/install/linux/android"
         echo "Usage: $0 <path-to-flutter-tarball>"
@@ -51,5 +51,5 @@ echo "Make sure to add to PATH: $BIN_PATHS"; echo
 
 env PATH="$PATH:$BIN_PATHS" flutter doctor; echo
 
-echo "❗ Andriod Studio may not show as being installed."
+echo "❗ Android Studio may not show as being installed."
 echo "Run 'flutter doctor' as user to check installation status."
