@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+DEST_DIR="/usr/bin"
+
+# Install Flutter (if not already)
+if [ -d "$DEST_DIR/flutter/bin" ]; then
+    echo "Flutter already installed."
+else
+    # require arg with path to binary
+    echo "Installing Flutter ..."
+    if [ -z "$1" ]; then
+        echo "Must provide path to tarball if not already installed."
+        echo "dowload at \
+            https://docs.flutter.dev/get-started/install/linux/android"
+        echo "Usage: $0 <path-to-flutter-tarball>"
+        exit 1
+    fi
+    PATH_TO_FL="$1"
+
+    echo "Unpacking $PATH_TO_FL to $DEST_DIR"
+    if ! tar -xf "$PATH_TO_FL" -C "$DEST_DIR"; then
+        echo "Failed to unpack $PATH_TO_FL."
+        exit 1
+    fi
+    echo "Flutter unpacked!"
+fi
+
+BIN_PATHS="$DEST_DIR/flutter/bin"
+FLUTTER_PATH="$BIN_PATHS/flutter"
+DART_PATH="$BIN_PATHS/dart"
+
+if ! $FLUTTER_PATH --version; then
+    echo "Flutter not installed successfully."
+    exit 1
+fi
+
+if ! $DART_PATH --version; then
+    echo "Dart not installed successfully."
+    exit 1
+fi
+
+echo "Installing requisites clang, CMake, ninja, libgtk-3dev, and pkg-config ..."
+if ! apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev; then
+    echo "❌ Failed to install clang, CMake, ninja, and pkg-config."
+    exit 1
+fi
+echo "✅ clang, CMake, ninja, libgtk-3-dev, and pkg-config installed."
+
+echo "Ready to go with Flutter and Dart!"; echo
+echo "Make sure to add to PATH: $BIN_PATHS"; echo
+
+env PATH="$PATH:$BIN_PATHS" flutter doctor; echo
+
+echo "❗ Android Studio may not show as being installed."
+echo "Run 'flutter doctor' as user to check installation status."

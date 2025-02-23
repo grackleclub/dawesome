@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# NOTE: 'libncurses5' fails when used like documentation suggests
+# but manually changing it to 'libncurses6' works fine
+
+URL_TO_AS="https://developer.android.com/studio"
+DEST_DIR="/usr/local"
+
+# Install Android Studio (if not already)
+if [ -d "$DEST_DIR/android-studio" ]; then
+    echo "Android Studio already installed."
+else
+    # require arg with path to binary
+    if [ -z "$1" ]; then
+        echo "Usage: $0 <path-to-android-studio-tarball>"
+        exit 1
+    fi
+    PATH_TO_AS="$1"
+
+    # verify the file exists at that path
+    if [ ! -f "$PATH_TO_AS" ]; then
+        echo "Android Studio not found at $PATH_TO_AS."
+        echo "Download Android Studio at:"
+        echo "  $URL_TO_AS"
+        exit 1
+    fi
+
+    # unpack that binary
+    echo "Unpacking $PATH_TO_AS to $DEST_DIR ..."
+    if ! tar -xzf "$PATH_TO_AS" -C "$DEST_DIR"; then
+        echo "Failed to unpack $PATH_TO_AS."
+        exit 1
+    fi
+    echo "Android Studio unpacked!"
+fi
+
+# Install required libraries
+# https://developer.android.com/studio/install#64bit-libs
+echo "Installing Android Studio required supplemental libraries"
+if ! apt-get install -y \
+    libc6:i386 libncurses6:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386; then
+    echo "Failed to install supplimental libs"
+    exit 1
+fi
+
+echo "Android Studio installed!"
+echo "Run /usr/local/android-studio/bin/studio.sh to start Android Studio."
+
