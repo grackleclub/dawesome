@@ -1,6 +1,8 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/public/flutter_sound_player.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,10 +16,10 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Tutorial Namer App',
+        title: 'Dawesome',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
         home: MyHomePage(),
       ),
@@ -76,6 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
       case 1:
         page = FavoritesPage();
         break;
+      case 2:
+        page = Placeholder();
+        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -108,6 +113,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         icon: Icon(Icons.favorite),
                         label: 'Favorites',
                       ),
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.volume_up),
+                        label: 'Synth',
+                      ),
                     ],
                     currentIndex: selectedIndex,
                     onTap: (value) {
@@ -133,6 +142,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       NavigationRailDestination(
                         icon: Icon(Icons.favorite),
                         label: Text('Favorites'),
+                      ),
+                      NavigationRailDestination(
+                        icon: Icon(Icons.volume_up),
+                        label: Text('Synth'),
                       ),
                     ],
                     selectedIndex: selectedIndex,
@@ -299,7 +312,7 @@ class _HistoryListViewState extends State<HistoryListView> {
   final _key = GlobalKey();
 
   static const Gradient _maskingGradient = LinearGradient(
-    colors: [Colors.transparent, Colors.white],
+    colors: [Colors.transparent, Colors.black],
     stops: [0.0, 0.5],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -344,3 +357,59 @@ class _HistoryListViewState extends State<HistoryListView> {
     ); //ShaderMask
   } //Widget
 } //class
+
+class SynthPage extends StatefulWidget {
+  @override
+  _SynthPageState createState() => _SynthPageState();
+}
+
+class _SynthPageState extends State<SynthPage> {
+  final FlutterSoundPlayer _player = FlutterSoundPlayer();
+
+  @override
+  void inintState() {
+    super.initState();
+    _player.openPlayer();
+  }
+
+  @override
+  void dispose() {
+    _player.closePlayer();
+    super.dispose();
+  }
+
+  Future<void> _playTone() async {
+    try {
+      await _player.startPlayerFromTone(
+        frequency: 440.0,
+        duration: Duration(milliseconds: 500),
+      );
+    } catch (e) {
+      print('Error playing tone: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var theme = Theme.of(context);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('This makes a sound', style: theme.textTheme.headlineMedium),
+        SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: _playTone,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: theme.colorScheme.onPrimary,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          ),
+          child: Text('Play Tone'),
+        ),
+      ],
+    );
+  }
+}
+
+// TODO: upgrage fultter SDK then try again
