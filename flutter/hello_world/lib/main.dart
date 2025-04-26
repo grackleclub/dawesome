@@ -1,8 +1,18 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/public/flutter_sound_player.dart';
+import 'dart:typed_data';
+
+import 'package:dart_melty_soundfont/preset.dart';
+import 'package:flutter/services.dart' show rootBundle;
+
+import 'package:flutter_pcm_sound/flutter_pcm_sound.dart';
+
+import 'package:dart_melty_soundfont/synthesizer.dart';
+import 'package:dart_melty_soundfont/synthesizer_settings.dart';
+import 'package:dart_melty_soundfont/audio_renderer_ex.dart';
+import 'package:dart_melty_soundfont/array_int16.dart';
+
+import 'package:english_words/english_words.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 
 void main() {
   runApp(MyApp());
@@ -79,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = FavoritesPage();
         break;
       case 2:
-        page = Placeholder();
+        page = SynthPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -364,52 +374,137 @@ class SynthPage extends StatefulWidget {
 }
 
 class _SynthPageState extends State<SynthPage> {
-  final FlutterSoundPlayer _player = FlutterSoundPlayer();
+  Synthesizer? _synth;
+  bool _isPlaying = false;
+  bool _pcmSoundLoaded = false;
+  bool _soundFontLoaded = false;
+  int _remainingFrames = 0;
+  int _fedCount = 0;
+  int _prevNote = 0;
+
+  final String asset = 'assets/Essential-Keys-v9.sf2';
+  final int sampleRate = 44100;
 
   @override
-  void inintState() {
+  void initState() {
     super.initState();
-    _player.openPlayer();
+    _initializeSynthesizer();
   }
 
-  @override
-  void dispose() {
-    _player.closePlayer();
-    super.dispose();
-  }
-
-  Future<void> _playTone() async {
+  Future<void> _initializeSynthesizer() async {
     try {
-      await _player.startPlayerFromTone(
-        frequency: 440.0,
-        duration: Duration(milliseconds: 500),
-      );
+      await _loadSoundfont();
+      await _loadPcmSound();
+      setState(() {
+        _soundFontLoaded = true;
+        _pcmSoundLoaded = true;
+      });
     } catch (e) {
-      print('Error playing tone: $e');
+      print("Error loading synthesizer: $e");
+    }
+  }
+
+  Future<void> _loadPcmSound() async {
+    try {
+      FlutterPcmSound.setFeedCallback(onFeed);
+      await FlutterPcmSound.setLogLevel(LogLevel.standard);
+      await FlutterPcmSound.setFeedThreshold(8000);
+      await FlutterPcmSound.setup(sampleRate: sampleRate, channelCount: 1);
+    } catch (e) {
+      print('Error setting up PCM sound: $e');
+    }
+  }
+
+  Future<void> _loadSoundfont() async {
+    try {
+      ByteData bytes = await rootBundle.load(asset);
+      _synth = Synthesizer.loadByteData(bytes, SynthesizerSettings());
+
+      // Print available presets for debugging
+      List<Preset> presets = _synth!.soundFont.presets;
+      for (int i = 0; i < presets.length; i++) {
+        String instrumentName =
+            presets[i].regions.isNotEmpty
+                ? presets[i].regions[0].instrument.name
+                : "N/A";
+        print(
+          '[Preset $i] Name: ${presets[i].name}, Instrument: $instrumentName',
+        );
+      }
+    } catch (e) {
+      print('Error loading sound font: $e');
     }
   }
 
   @override
+  void dispose() {
+    FlutterPcmSound.release();
+    _synth?.noteOffAll();
+    super.dispose();
+  }
+
+  void onFeed(int remainingFrames) async {
+    setState(() {
+      _remainingFrames = remainingFrames;
+    });
+
+    List<int> notes = [60, 62, 64, 65, 67, 69, 71, 72];
+    int step = (_fedCount ~/ 16) % notes.length;
+    int curNote = notes[step];
+    if (curNote != _prevNote) {
+      if (_synth == null) return;
+      _synth!.noteOff(channel: 0, key: _prevNote);
+      _synth!.noteOn(channel: 0, key: curNote, velocity: 120);
+    }
+    ArrayInt16 buf16 = ArrayInt16.zeros(numShorts: 1000);
+    _synth!.renderMonoInt16(buf16);
+    await FlutterPcmSound.feed(PcmArrayInt16(bytes: buf16.bytes));
+    _fedCount++;
+    _prevNote = curNote;
+  }
+
+  Future<void> _play() async {
+    if (_isPlaying) return;
+
+    if (_synth == null) {
+      print("Synthesizer not initialized");
+      return;
+    }
+
+    try {
+      await FlutterPcmSound.setup(sampleRate: sampleRate, channelCount: 1);
+      FlutterPcmSound.start();
+
+      setState(() {
+        _isPlaying = true;
+      });
+    } catch (e) {
+      print("Error starting playback: $e");
+    }
+
+  Future<void> _pause() async {
+    await FlutterPcmSound.pause();
+    setState(() {
+      _isPlaying = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context);
+    if (!_pcmSoundLoaded || !_soundFontLoaded) {
+      return Center(child: Text("Initializing..."));
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('This makes a sound', style: theme.textTheme.headlineMedium),
-        SizedBox(height: 20),
         ElevatedButton(
-          onPressed: _playTone,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: theme.colorScheme.primary,
-            foregroundColor: theme.colorScheme.onPrimary,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          ),
-          child: Text('Play Tone'),
+          onPressed: () => _isPlaying ? _pause() : _play(),
+          child: Text(_isPlaying ? "Pause" : "Play"),
         ),
+        SizedBox(height: 20),
+        Text("Remaining frames: $_remainingFrames"),
       ],
     );
   }
 }
-
-// TODO: upgrage fultter SDK then try again
