@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'dart:typed_data';
-
-import 'package:dart_melty_soundfont/preset.dart';
-import 'package:flutter/services.dart' show rootBundle;
-
-import 'package:flutter_pcm_sound/flutter_pcm_sound.dart';
-
-import 'package:dart_melty_soundfont/synthesizer.dart';
-import 'package:dart_melty_soundfont/synthesizer_settings.dart';
-import 'package:dart_melty_soundfont/audio_renderer_ex.dart';
-import 'package:dart_melty_soundfont/array_int16.dart';
-
+// import 'dart:typed_data';
+// import 'package:flutter/services.dart';
 import 'package:english_words/english_words.dart';
 import 'package:provider/provider.dart';
+// import 'package:sound_generator/sound_generator.dart';
+// import 'package:sound_generator/waveTypes.dart';
+// import 'dart:ui';
 
 void main() {
   runApp(MyApp());
@@ -89,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = FavoritesPage();
         break;
       case 2:
-        page = SynthPage();
+        page = Placeholder();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -368,143 +361,288 @@ class _HistoryListViewState extends State<HistoryListView> {
   } //Widget
 } //class
 
-class SynthPage extends StatefulWidget {
-  @override
-  _SynthPageState createState() => _SynthPageState();
-}
+// class SynthPage extends StatefulWidget {
+//   const SynthPage({Key? key}) : super(key: key);
 
-class _SynthPageState extends State<SynthPage> {
-  Synthesizer? _synth;
-  bool _isPlaying = false;
-  bool _pcmSoundLoaded = false;
-  bool _soundFontLoaded = false;
-  int _remainingFrames = 0;
-  int _fedCount = 0;
-  int _prevNote = 0;
+//   @override
+//   State<SynthPage> createState() => _SynthPageState();
+// }
 
-  final String asset = 'assets/Essential-Keys-v9.sf2';
-  final int sampleRate = 44100;
+// class MyPainter extends CustomPainter {
+//   //         <-- CustomPainter class
+//   final List<int> oneCycleData;
 
-  @override
-  void initState() {
-    super.initState();
-    _initializeSynthesizer();
-  }
+//   MyPainter(this.oneCycleData);
 
-  Future<void> _initializeSynthesizer() async {
-    try {
-      await _loadSoundfont();
-      await _loadPcmSound();
-      setState(() {
-        _soundFontLoaded = true;
-        _pcmSoundLoaded = true;
-      });
-    } catch (e) {
-      print("Error loading synthesizer: $e");
-    }
-  }
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     var i = 0;
+//     List<Offset> maxPoints = [];
 
-  Future<void> _loadPcmSound() async {
-    try {
-      FlutterPcmSound.setFeedCallback(onFeed);
-      await FlutterPcmSound.setLogLevel(LogLevel.standard);
-      await FlutterPcmSound.setFeedThreshold(8000);
-      await FlutterPcmSound.setup(sampleRate: sampleRate, channelCount: 1);
-    } catch (e) {
-      print('Error setting up PCM sound: $e');
-    }
-  }
+//     final t = size.width / (oneCycleData.length - 1);
+//     for (var i0 = 0, len = oneCycleData.length; i0 < len; i0++) {
+//       maxPoints.add(
+//         Offset(
+//           t * i,
+//           size.height / 2 -
+//               oneCycleData[i0].toDouble() / 32767.0 * size.height / 2,
+//         ),
+//       );
+//       i++;
+//     }
 
-  Future<void> _loadSoundfont() async {
-    try {
-      ByteData bytes = await rootBundle.load(asset);
-      _synth = Synthesizer.loadByteData(bytes, SynthesizerSettings());
+//     final paint =
+//         Paint()
+//           ..color = Colors.black
+//           ..strokeWidth = 1
+//           ..strokeCap = StrokeCap.round;
+//     canvas.drawPoints(PointMode.polygon, maxPoints, paint);
+//   }
 
-      // Print available presets for debugging
-      List<Preset> presets = _synth!.soundFont.presets;
-      for (int i = 0; i < presets.length; i++) {
-        String instrumentName =
-            presets[i].regions.isNotEmpty
-                ? presets[i].regions[0].instrument.name
-                : "N/A";
-        print(
-          '[Preset $i] Name: ${presets[i].name}, Instrument: $instrumentName',
-        );
-      }
-    } catch (e) {
-      print('Error loading sound font: $e');
-    }
-  }
+//   @override
+//   bool shouldRepaint(MyPainter oldDelegate) {
+//     if (oneCycleData != oldDelegate.oneCycleData) {
+//       return true;
+//     }
+//     return false;
+//   }
+// }
 
-  @override
-  void dispose() {
-    FlutterPcmSound.release();
-    _synth?.noteOffAll();
-    super.dispose();
-  }
+// class _SynthPageState extends State<SynthPage> {
+//   bool isPlaying = false;
+//   double frequency = 20;
+//   double balance = 0;
+//   double volume = 1;
+//   double dB = 0;
+//   waveTypes waveType = waveTypes.SINUSOIDAL;
+//   int sampleRate = 192000;
+//   List<int>? oneCycleData;
 
-  void onFeed(int remainingFrames) async {
-    setState(() {
-      _remainingFrames = remainingFrames;
-    });
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//         appBar: AppBar(title: const Text('Sound Generator Example')),
+//         body: SingleChildScrollView(
+//           physics: const AlwaysScrollableScrollPhysics(),
+//           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children: [
+//               const Text("A Cycle's Snapshot With Real Data"),
+//               const SizedBox(height: 2),
+//               Container(
+//                 height: 100,
+//                 width: double.infinity,
+//                 color: Colors.white54,
+//                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+//                 child:
+//                     oneCycleData != null
+//                         ? CustomPaint(painter: MyPainter(oneCycleData!))
+//                         : Container(),
+//               ),
+//               const SizedBox(height: 2),
+//               Text(
+//                 "A Cycle Data Length is ${(sampleRate / frequency).round()} on sample rate $sampleRate",
+//               ),
+//               const SizedBox(height: 5),
+//               const Divider(color: Colors.red),
+//               const SizedBox(height: 5),
+//               CircleAvatar(
+//                 radius: 30,
+//                 backgroundColor: Colors.lightBlueAccent,
+//                 child: IconButton(
+//                   icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow),
+//                   onPressed: () {
+//                     isPlaying ? SoundGenerator.stop() : SoundGenerator.play();
+//                   },
+//                 ),
+//               ),
+//               const SizedBox(height: 5),
+//               const Divider(color: Colors.red),
+//               const SizedBox(height: 5),
+//               const Text("Wave Form"),
+//               Center(
+//                 child: DropdownButton<waveTypes>(
+//                   value: waveType,
+//                   onChanged: (waveTypes? newValue) {
+//                     setState(() {
+//                       waveType = newValue!;
+//                       SoundGenerator.setWaveType(waveType);
+//                     });
+//                   },
+//                   items:
+//                       waveTypes.values.map((waveTypes classType) {
+//                         return DropdownMenuItem<waveTypes>(
+//                           value: classType,
+//                           child: Text(classType.toString().split('.').last),
+//                         );
+//                       }).toList(),
+//                 ),
+//               ),
+//               const SizedBox(height: 5),
+//               const Divider(color: Colors.red),
+//               const SizedBox(height: 5),
+//               const Text("Frequency"),
+//               SizedBox(
+//                 width: double.infinity,
+//                 height: 40,
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   crossAxisAlignment: CrossAxisAlignment.stretch,
+//                   children: <Widget>[
+//                     Expanded(
+//                       flex: 2,
+//                       child: Center(
+//                         child: Text("${frequency.toStringAsFixed(2)} Hz"),
+//                       ),
+//                     ),
+//                     Expanded(
+//                       flex: 8, // 60%
+//                       child: Slider(
+//                         min: 20,
+//                         max: 10000,
+//                         value: frequency,
+//                         onChanged: (value) {
+//                           setState(() {
+//                             frequency = value.toDouble();
+//                             SoundGenerator.setFrequency(frequency);
+//                           });
+//                         },
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               const SizedBox(height: 5),
+//               const Text("Balance"),
+//               SizedBox(
+//                 width: double.infinity,
+//                 height: 40,
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   crossAxisAlignment: CrossAxisAlignment.stretch,
+//                   children: <Widget>[
+//                     Expanded(
+//                       flex: 2,
+//                       child: Center(child: Text(balance.toStringAsFixed(2))),
+//                     ),
+//                     Expanded(
+//                       flex: 8, // 60%
+//                       child: Slider(
+//                         min: -1,
+//                         max: 1,
+//                         value: balance,
+//                         onChanged: (value) {
+//                           setState(() {
+//                             balance = value.toDouble();
+//                             SoundGenerator.setBalance(balance);
+//                           });
+//                         },
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               const SizedBox(height: 5),
+//               const Text("Volume"),
+//               SizedBox(
+//                 width: double.infinity,
+//                 height: 40,
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   crossAxisAlignment: CrossAxisAlignment.stretch,
+//                   children: <Widget>[
+//                     Expanded(
+//                       flex: 2,
+//                       child: Center(child: Text(volume.toStringAsFixed(6))),
+//                     ),
+//                     Expanded(
+//                       flex: 8, // 60%
+//                       child: Slider(
+//                         min: 0,
+//                         max: 1,
+//                         value: volume,
+//                         onChanged: (value) async {
+//                           SoundGenerator.setVolume(volume);
+//                           double newDB = await SoundGenerator.getDecibel;
+//                           setState(() {
+//                             volume = value.toDouble();
+//                             dB = newDB;
+//                           });
+//                         },
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               const SizedBox(height: 5),
+//               const Text("Decibel"),
+//               SizedBox(
+//                 width: double.infinity,
+//                 height: 40,
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   crossAxisAlignment: CrossAxisAlignment.stretch,
+//                   children: <Widget>[
+//                     Expanded(
+//                       flex: 2,
+//                       child: Center(child: Text(dB.toStringAsFixed(2))),
+//                     ),
+//                     Expanded(
+//                       flex: 8, // 60%
+//                       child: Slider(
+//                         min: -120,
+//                         max: 0,
+//                         value: dB,
+//                         onChanged: (value) async {
+//                           SoundGenerator.setDecibel(value.toDouble());
+//                           double newVolume = await SoundGenerator.getVolume;
+//                           setState(() {
+//                             dB = value.toDouble();
+//                             volume = newVolume;
+//                           });
+//                         },
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 
-    List<int> notes = [60, 62, 64, 65, 67, 69, 71, 72];
-    int step = (_fedCount ~/ 16) % notes.length;
-    int curNote = notes[step];
-    if (curNote != _prevNote) {
-      if (_synth == null) return;
-      _synth!.noteOff(channel: 0, key: _prevNote);
-      _synth!.noteOn(channel: 0, key: curNote, velocity: 120);
-    }
-    ArrayInt16 buf16 = ArrayInt16.zeros(numShorts: 1000);
-    _synth!.renderMonoInt16(buf16);
-    await FlutterPcmSound.feed(PcmArrayInt16(bytes: buf16.bytes));
-    _fedCount++;
-    _prevNote = curNote;
-  }
+//   @override
+//   void dispose() {
+//     super.dispose();
+//     SoundGenerator.release();
+//   }
 
-  Future<void> _play() async {
-    if (_isPlaying) return;
+//   @override
+//   void initState() {
+//     super.initState();
+//     isPlaying = false;
 
-    if (_synth == null) {
-      print("Synthesizer not initialized");
-      return;
-    }
+//     SoundGenerator.init(sampleRate);
 
-    try {
-      await FlutterPcmSound.setup(sampleRate: sampleRate, channelCount: 1);
-      FlutterPcmSound.start();
+//     SoundGenerator.onIsPlayingChanged.listen((value) {
+//       setState(() {
+//         isPlaying = value;
+//       });
+//     });
 
-      setState(() {
-        _isPlaying = true;
-      });
-    } catch (e) {
-      print("Error starting playback: $e");
-    }
+//     SoundGenerator.onOneCycleDataHandler.listen((value) {
+//       setState(() {
+//         oneCycleData = value;
+//       });
+//     });
 
-  Future<void> _pause() async {
-    await FlutterPcmSound.pause();
-    setState(() {
-      _isPlaying = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_pcmSoundLoaded || !_soundFontLoaded) {
-      return Center(child: Text("Initializing..."));
-    }
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ElevatedButton(
-          onPressed: () => _isPlaying ? _pause() : _play(),
-          child: Text(_isPlaying ? "Pause" : "Play"),
-        ),
-        SizedBox(height: 20),
-        Text("Remaining frames: $_remainingFrames"),
-      ],
-    );
-  }
-}
+//     SoundGenerator.setAutoUpdateOneCycleSample(true);
+//     //Force update for one time
+//     SoundGenerator.refreshOneCycleData();
+//   }
+// }
