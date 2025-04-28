@@ -2,6 +2,9 @@ name: Flutter CI
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
+      - develop
 
 jobs:
   build:
@@ -18,3 +21,29 @@ jobs:
 
       - name: Cache Flutter SDK
         uses: actions/cache@v2
+        with:
+          path: ~/.flutter
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      - name: Install Flutter SDK
+        run: |
+          git clone https://github.com/flutter/flutter.git -b stable --depth 1
+          echo "$HOME/flutter/bin" >> $GITHUB_PATH
+
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run Flutter tests
+        run: flutter test
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build iOS (if applicable)
+        if: runner.os == 'macOS'
+        run: flutter build ios --release
