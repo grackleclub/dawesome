@@ -23,23 +23,36 @@ jobs:
         uses: actions/cache@v4
         with:
           path: $HOME/flutter
-          key: ${{ runner.os }}-flutter-rebuild${{ hashFiles('**/pubspec.yaml') }}
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
           restore-keys: |
             ${{ runner.os }}-flutter-
 
-      - name: Debug Flutter SDK cache
-        run: ls -la $HOME/flutter || echo "Cache not restored, directory is empty."
 
-      - name: Verify Flutter SDK cache
-        run: ls -la $HOME/flutter/bin
+      - name: Check Flutter SDK directory
+        run: |
+          if [ ! -d "$HOME/flutter" ] || [ -z "$(ls -A $HOME/flutter)" ]; then
+            echo "Flutter SDK directory is empty or does not exist."
+          else
+            echo "Flutter SDK directory exists and is not empty."
+          fi
 
       - name: Install Flutter SDK
         run: |
           if [ ! -f "$HOME/flutter/bin/flutter" ]; then
-            git clone https://github.com/flutter/flutter.git -b stable --depth 1
+            echo "Flutter SDK not found. Downloading..."
+            git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
             echo "$HOME/flutter/bin" >> $GITHUB_PATH
             export PATH="$HOME/flutter/bin:$PATH"
+          else
+            echo "Flutter SDK already installed."
           fi
+      
+      - name: Save Flutter SDK to cache
+        uses: actions/cache@v4
+        with:
+          path: $HOME/flutter
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}    
+
 
       - name: Debug Flutter SDK directory
         run: ls -la $HOME/flutter/bin
