@@ -22,7 +22,7 @@ jobs:
       - name: Cache Flutter SDK
         uses: actions/cache@v2
         with:
-          path: ~/.flutter
+          path: $HOME/.flutter
           key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
           restore-keys: |
             ${{ runner.os }}-flutter-
