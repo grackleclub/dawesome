@@ -27,10 +27,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-
 
+      - name: Verify Flutter SDK cache
+        run: ls -la $HOME/flutter
+
       - name: Install Flutter SDK
         run: |
           git clone https://github.com/flutter/flutter.git -b stable --depth 1
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
+
+      - name: Verify Flutter installation
+        run: flutter doctor
+
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.HOME }}/.pub-cache
+          key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-cache-  
 
       - name: Flutter version
         run: flutter --version
