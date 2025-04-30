@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-flutter-
 
       - name: Debug Flutter SDK cache
-        run: ls -la $HOME/flutter
+        run: ls -la $HOME/flutter || echo "Cache not restored, directory is empty."
 
       - name: Verify Flutter SDK cache
         run: ls -la $HOME/flutter/bin
