@@ -35,8 +35,8 @@ jobs:
           git clone https://github.com/flutter/flutter.git -b stable --depth 1
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
-      - name: Verify Flutter installation
-        run: flutter doctor
+      # - name: Verify Flutter installation
+      #   run: flutter doctor
 
       - name: Cache Flutter dependencies
         uses: actions/cache@v4
