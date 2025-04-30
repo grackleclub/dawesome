@@ -27,6 +27,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-
 
+      - name: Debug Flutter SDK cache
+        run: ls -la $HOME/flutter
+
       - name: Verify Flutter SDK cache
         run: ls -la $HOME/flutter/bin
 
