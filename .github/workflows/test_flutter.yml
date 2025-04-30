@@ -19,13 +19,13 @@ jobs:
           java-version: "11"
           distribution: "temurin"
 
-      - name: Cache Flutter SDK
-        uses: actions/cache@v2
-        with:
-          path: $HOME/flutter
-          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-
+      # - name: Cache Flutter SDK
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: $HOME/flutter
+      #     key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-flutter-
 
       - name: Verify Flutter SDK cache
         run: ls -la $HOME/flutter
