@@ -27,10 +27,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-
 
-      # - name: Verify Flutter SDK cache
-      #   run: ls -la $HOME/flutter
+      - name: Verify Flutter SDK cache
+        run: ls -la $HOME/flutter/bin
 
       - name: Install Flutter SDK
+        if:![-f &HOME/flutter/bin/flutter]
         run: |
           git clone https://github.com/flutter/flutter.git -b stable --depth 1
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
