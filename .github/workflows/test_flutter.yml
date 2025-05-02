@@ -93,7 +93,7 @@ jobs:
         run: flutter pub get
 
       - name: Run Flutter tests
-        run: flutter test
+        run: flutter test flutter/hello_world/test
 
       - name: Build APK
         run: flutter build apk --release
