@@ -55,7 +55,18 @@ jobs:
         working-directory: app
         run: flutter build apk --release
 
-      - name: Build iOS (if applicable)
-        if: runner.os == 'macOS'
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-apk
+          path: app/build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Build iOS
         working-directory: app
         run: flutter build ios --release
+
+      - name: Upload iOS artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-ipa
+          path: build/ios/ipa/*.ipa
