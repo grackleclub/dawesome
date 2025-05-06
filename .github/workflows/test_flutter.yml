@@ -24,43 +24,12 @@ jobs:
       - name: Verify Java version
         run: java -version
 
-      - name: Cache Flutter SDK
-        uses: actions/cache@v4
-        with:
-          path: $HOME/flutter
-          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-
-
-
-      - name: Check Flutter SDK directory
-        run: |
-          if [ ! -d "$HOME/flutter" ] || [ -z "$(ls -A $HOME/flutter)" ]; then
-            echo "Flutter SDK directory is empty or does not exist."
-          else
-            echo "Flutter SDK directory exists and is not empty."
-          fi
-
       - name: Install Flutter SDK
         run: |
-          if [ ! -f "$HOME/flutter/bin/flutter" ]; then
-            echo "Flutter SDK not found. Downloading..."
-            git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
-            echo "$HOME/flutter/bin" >> $GITHUB_PATH
-            export PATH="$HOME/flutter/bin:$PATH"
-          else
-            echo "Flutter SDK already installed."
-          fi
-      
-      - name: Save Flutter SDK to cache
-        uses: actions/cache@v4
-        with:
-          path: $HOME/flutter
-          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}    
-
-
-      - name: Debug Flutter SDK directory
-        run: ls -la $HOME/flutter/bin
+          echo "Downloading Flutter SDK..."
+          git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
+          echo "$HOME/flutter/bin" >> $GITHUB_PATH
+          export PATH="$HOME/flutter/bin:$PATH"
 
       - name: Accept Android licenses
         run: yes | flutter doctor --android-licenses
@@ -71,22 +40,8 @@ jobs:
       - name: Verify Flutter installation
         run: flutter doctor
 
-      - name: Cache Flutter dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.HOME }}/.pub-cache
-          key: ${{ runner.os }}-pub-cache-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pub-cache-  
-
       - name: Flutter version
         run: flutter --version
-
-      - name: Debug current directory
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Contents of current directory:"
-          ls -la
 
       - name: Install dependencies
         working-directory: app
@@ -102,4 +57,5 @@ jobs:
 
       - name: Build iOS (if applicable)
         if: runner.os == 'macOS'
+        working-directory: app
         run: flutter build ios --release
