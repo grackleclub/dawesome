@@ -2,9 +2,11 @@ name: Flutter CI
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
-      - turk/ci
+    tags:
+      - 'v*'
+    # branches:
+    #   - main
+    #   - turk/ci
 
 jobs:
   build:
@@ -72,5 +74,3 @@ jobs:
         with:
           name: ios-ipa
           path: build/ios/ipa/*.ipa
-
-          #note: this is just to have a change to save.
