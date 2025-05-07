@@ -12,7 +12,7 @@ on:
   pull_request:
     paths-ignore:
       - '.github/**'
-  
+
 jobs:
   test-build:
     name: Test Go
@@ -23,10 +23,10 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21.x'
+          go-version: stable
 
       - name: Run Go Tests
-        run: go test -v
+        run: go test ./... -v --cover
 
       - name: Build Go
         # build is currently not saved
@@ -42,7 +42,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.GH_TOKEN }} # requires PAT
-          repository: ddbgio/ddbg
+          repository: grackleclub/cloud
           event-type: deploy-service
           client-payload: >
             {
