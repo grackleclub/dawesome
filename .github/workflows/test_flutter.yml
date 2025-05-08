@@ -4,9 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-    # branches:
-    #   - main
-    #   - turk/ci
 
 jobs:
   build:
@@ -15,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: kat/flutterbeep
+          ref: main
 
       - name: Set up JDK 17
         uses: actions/setup-java@v2
