@@ -275,7 +275,7 @@ class BigCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
+      color: theme.colorScheme.onSecondary,
     );
 
     return Card(
