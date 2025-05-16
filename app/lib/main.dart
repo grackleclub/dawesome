@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-// import 'dart:typed_data';
-// import 'package:flutter/services.dart';
+import 'package:flutter/services.dart';
 import 'package:english_words/english_words.dart';
 import 'package:provider/provider.dart';
-// import 'package:sound_generator/sound_generator.dart';
-// import 'package:sound_generator/waveTypes.dart';
-// import 'dart:ui';
+import 'dart:async';
+import 'package:sonic_frequencies/sonic_frequencies.dart';
 
 void main() {
   runApp(MyApp());
@@ -62,6 +60,8 @@ class MyAppState extends ChangeNotifier {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = FavoritesPage();
         break;
       case 2:
-        page = Placeholder();
+        page = SynthPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -170,6 +170,8 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class GeneratorPage extends StatelessWidget {
+  const GeneratorPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
@@ -217,6 +219,8 @@ class GeneratorPage extends StatelessWidget {
 }
 
 class FavoritesPage extends StatelessWidget {
+  const FavoritesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -267,7 +271,7 @@ class FavoritesPage extends StatelessWidget {
 }
 
 class BigCard extends StatelessWidget {
-  const BigCard({Key? key, required this.pair}) : super(key: key);
+  const BigCard({super.key, required this.pair});
 
   final WordPair pair;
 
@@ -305,7 +309,7 @@ class BigCard extends StatelessWidget {
 }
 
 class HistoryListView extends StatefulWidget {
-  const HistoryListView({Key? key}) : super(key: key);
+  const HistoryListView({super.key});
 
   @override
   State<HistoryListView> createState() => _HistoryListViewState();
@@ -361,288 +365,392 @@ class _HistoryListViewState extends State<HistoryListView> {
   } //Widget
 } //class
 
-// class SynthPage extends StatefulWidget {
-//   const SynthPage({Key? key}) : super(key: key);
+class SynthPage extends StatefulWidget {
+  const SynthPage({super.key});
 
-//   @override
-//   State<SynthPage> createState() => _SynthPageState();
-// }
+  @override
+  State<SynthPage> createState() => _SynthPageState();
+}
 
-// class MyPainter extends CustomPainter {
-//   //         <-- CustomPainter class
-//   final List<int> oneCycleData;
+class _SynthPageState extends State<SynthPage> {
+  String _platformVersion = 'Unknown';
+  final _sonicFrequenciesPlugin = SonicFrequencies();
+  bool _isPlaying = false;
+  double _frequency = 440.0;
+  double _volume = 1.0;
+  int _duration = 3000;
+  double _startFrequency = 200.0;
+  double _endFrequency = 2000.0;
 
-//   MyPainter(this.oneCycleData);
+  // Predefined frequencies for repelling different insects
+  final Map<String, double> _insectFrequencies = {
+    'Mosquitoes': 18000.0,
+    'Flies': 15000.0,
+    'Cockroaches': 20000.0,
+    'Ants': 22000.0,
+    'Rodents': 25000.0,
+  };
 
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     var i = 0;
-//     List<Offset> maxPoints = [];
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
 
-//     final t = size.width / (oneCycleData.length - 1);
-//     for (var i0 = 0, len = oneCycleData.length; i0 < len; i0++) {
-//       maxPoints.add(
-//         Offset(
-//           t * i,
-//           size.height / 2 -
-//               oneCycleData[i0].toDouble() / 32767.0 * size.height / 2,
-//         ),
-//       );
-//       i++;
-//     }
+  @override
+  void dispose() {
+    _stopTone();
+    super.dispose();
+  }
 
-//     final paint =
-//         Paint()
-//           ..color = Colors.black
-//           ..strokeWidth = 1
-//           ..strokeCap = StrokeCap.round;
-//     canvas.drawPoints(PointMode.polygon, maxPoints, paint);
-//   }
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {
+    String platformVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    // We also handle the message potentially returning null.
+    try {
+      platformVersion =
+          await _sonicFrequenciesPlugin.getPlatformVersion() ??
+          'Unknown platform version';
+    } on PlatformException {
+      platformVersion = 'Failed to get platform version.';
+    }
 
-//   @override
-//   bool shouldRepaint(MyPainter oldDelegate) {
-//     if (oneCycleData != oldDelegate.oneCycleData) {
-//       return true;
-//     }
-//     return false;
-//   }
-// }
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
 
-// class _SynthPageState extends State<SynthPage> {
-//   bool isPlaying = false;
-//   double frequency = 20;
-//   double balance = 0;
-//   double volume = 1;
-//   double dB = 0;
-//   waveTypes waveType = waveTypes.SINUSOIDAL;
-//   int sampleRate = 192000;
-//   List<int>? oneCycleData;
+    setState(() {
+      _platformVersion = platformVersion;
+    });
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(title: const Text('Sound Generator Example')),
-//         body: SingleChildScrollView(
-//           physics: const AlwaysScrollableScrollPhysics(),
-//           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             children: [
-//               const Text("A Cycle's Snapshot With Real Data"),
-//               const SizedBox(height: 2),
-//               Container(
-//                 height: 100,
-//                 width: double.infinity,
-//                 color: Colors.white54,
-//                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-//                 child:
-//                     oneCycleData != null
-//                         ? CustomPaint(painter: MyPainter(oneCycleData!))
-//                         : Container(),
-//               ),
-//               const SizedBox(height: 2),
-//               Text(
-//                 "A Cycle Data Length is ${(sampleRate / frequency).round()} on sample rate $sampleRate",
-//               ),
-//               const SizedBox(height: 5),
-//               const Divider(color: Colors.red),
-//               const SizedBox(height: 5),
-//               CircleAvatar(
-//                 radius: 30,
-//                 backgroundColor: Colors.lightBlueAccent,
-//                 child: IconButton(
-//                   icon: Icon(isPlaying ? Icons.stop : Icons.play_arrow),
-//                   onPressed: () {
-//                     isPlaying ? SoundGenerator.stop() : SoundGenerator.play();
-//                   },
-//                 ),
-//               ),
-//               const SizedBox(height: 5),
-//               const Divider(color: Colors.red),
-//               const SizedBox(height: 5),
-//               const Text("Wave Form"),
-//               Center(
-//                 child: DropdownButton<waveTypes>(
-//                   value: waveType,
-//                   onChanged: (waveTypes? newValue) {
-//                     setState(() {
-//                       waveType = newValue!;
-//                       SoundGenerator.setWaveType(waveType);
-//                     });
-//                   },
-//                   items:
-//                       waveTypes.values.map((waveTypes classType) {
-//                         return DropdownMenuItem<waveTypes>(
-//                           value: classType,
-//                           child: Text(classType.toString().split('.').last),
-//                         );
-//                       }).toList(),
-//                 ),
-//               ),
-//               const SizedBox(height: 5),
-//               const Divider(color: Colors.red),
-//               const SizedBox(height: 5),
-//               const Text("Frequency"),
-//               SizedBox(
-//                 width: double.infinity,
-//                 height: 40,
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   crossAxisAlignment: CrossAxisAlignment.stretch,
-//                   children: <Widget>[
-//                     Expanded(
-//                       flex: 2,
-//                       child: Center(
-//                         child: Text("${frequency.toStringAsFixed(2)} Hz"),
-//                       ),
-//                     ),
-//                     Expanded(
-//                       flex: 8, // 60%
-//                       child: Slider(
-//                         min: 20,
-//                         max: 10000,
-//                         value: frequency,
-//                         onChanged: (value) {
-//                           setState(() {
-//                             frequency = value.toDouble();
-//                             SoundGenerator.setFrequency(frequency);
-//                           });
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               const SizedBox(height: 5),
-//               const Text("Balance"),
-//               SizedBox(
-//                 width: double.infinity,
-//                 height: 40,
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   crossAxisAlignment: CrossAxisAlignment.stretch,
-//                   children: <Widget>[
-//                     Expanded(
-//                       flex: 2,
-//                       child: Center(child: Text(balance.toStringAsFixed(2))),
-//                     ),
-//                     Expanded(
-//                       flex: 8, // 60%
-//                       child: Slider(
-//                         min: -1,
-//                         max: 1,
-//                         value: balance,
-//                         onChanged: (value) {
-//                           setState(() {
-//                             balance = value.toDouble();
-//                             SoundGenerator.setBalance(balance);
-//                           });
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               const SizedBox(height: 5),
-//               const Text("Volume"),
-//               SizedBox(
-//                 width: double.infinity,
-//                 height: 40,
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   crossAxisAlignment: CrossAxisAlignment.stretch,
-//                   children: <Widget>[
-//                     Expanded(
-//                       flex: 2,
-//                       child: Center(child: Text(volume.toStringAsFixed(6))),
-//                     ),
-//                     Expanded(
-//                       flex: 8, // 60%
-//                       child: Slider(
-//                         min: 0,
-//                         max: 1,
-//                         value: volume,
-//                         onChanged: (value) async {
-//                           SoundGenerator.setVolume(volume);
-//                           double newDB = await SoundGenerator.getDecibel;
-//                           setState(() {
-//                             volume = value.toDouble();
-//                             dB = newDB;
-//                           });
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               const SizedBox(height: 5),
-//               const Text("Decibel"),
-//               SizedBox(
-//                 width: double.infinity,
-//                 height: 40,
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   crossAxisAlignment: CrossAxisAlignment.stretch,
-//                   children: <Widget>[
-//                     Expanded(
-//                       flex: 2,
-//                       child: Center(child: Text(dB.toStringAsFixed(2))),
-//                     ),
-//                     Expanded(
-//                       flex: 8, // 60%
-//                       child: Slider(
-//                         min: -120,
-//                         max: 0,
-//                         value: dB,
-//                         onChanged: (value) async {
-//                           SoundGenerator.setDecibel(value.toDouble());
-//                           double newVolume = await SoundGenerator.getVolume;
-//                           setState(() {
-//                             dB = value.toDouble();
-//                             volume = newVolume;
-//                           });
-//                         },
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
+  Future<void> _generateTone() async {
+    if (_isPlaying) {
+      await _stopTone();
+    }
 
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     SoundGenerator.release();
-//   }
+    try {
+      final result = await _sonicFrequenciesPlugin.generateTone(
+        frequency: _frequency,
+        volume: _volume,
+        duration: _duration,
+      );
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     isPlaying = false;
+      setState(() {
+        _isPlaying = result;
+      });
+    } on PlatformException catch (e) {
+      debugPrint('Error generating tone: ${e.message}');
+    }
+  }
 
-//     SoundGenerator.init(sampleRate);
+  Future<void> _generateSweep() async {
+    if (_isPlaying) {
+      await _stopTone();
+    }
 
-//     SoundGenerator.onIsPlayingChanged.listen((value) {
-//       setState(() {
-//         isPlaying = value;
-//       });
-//     });
+    try {
+      final result = await _sonicFrequenciesPlugin.generateSweep(
+        startFrequency: _startFrequency,
+        endFrequency: _endFrequency,
+        duration: _duration,
+        volume: _volume,
+      );
 
-//     SoundGenerator.onOneCycleDataHandler.listen((value) {
-//       setState(() {
-//         oneCycleData = value;
-//       });
-//     });
+      setState(() {
+        _isPlaying = result;
+      });
+    } on PlatformException catch (e) {
+      debugPrint('Error generating sweep: ${e.message}');
+    }
+  }
 
-//     SoundGenerator.setAutoUpdateOneCycleSample(true);
-//     //Force update for one time
-//     SoundGenerator.refreshOneCycleData();
-//   }
-// }
+  Future<void> _stopTone() async {
+    try {
+      final result = await _sonicFrequenciesPlugin.stopTone();
+      setState(() {
+        _isPlaying = !result;
+      });
+    } on PlatformException catch (e) {
+      debugPrint('Error stopping tone: ${e.message}');
+    }
+  }
+
+  Future<void> _playInsectRepellent(String insectType) async {
+    if (_isPlaying) {
+      await _stopTone();
+    }
+
+    final frequency = _insectFrequencies[insectType] ?? 440.0;
+
+    try {
+      final result = await _sonicFrequenciesPlugin.generateTone(
+        frequency: frequency,
+        volume: _volume,
+      );
+
+      setState(() {
+        _isPlaying = result;
+        _frequency = frequency;
+      });
+    } on PlatformException catch (e) {
+      debugPrint('Error generating tone: ${e.message}');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Sonic Frequencies'),
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Running on: $_platformVersion'),
+              const SizedBox(height: 20),
+
+              // Tone Generator Section
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Tone Generator',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Frequency Slider
+                      Row(
+                        children: [
+                          const Text('Frequency (Hz): '),
+                          Expanded(
+                            child: Slider(
+                              value: _frequency,
+                              min: 20.0,
+                              max: 20000.0,
+                              onChanged: (value) {
+                                setState(() {
+                                  _frequency = value;
+                                });
+                              },
+                            ),
+                          ),
+                          Text(_frequency.toStringAsFixed(1)),
+                        ],
+                      ),
+
+                      // Volume Slider
+                      Row(
+                        children: [
+                          const Text('Volume: '),
+                          Expanded(
+                            child: Slider(
+                              value: _volume,
+                              min: 0.0,
+                              max: 1.0,
+                              onChanged: (value) {
+                                setState(() {
+                                  _volume = value;
+                                });
+                              },
+                            ),
+                          ),
+                          Text(_volume.toStringAsFixed(2)),
+                        ],
+                      ),
+
+                      // Duration Slider
+                      Row(
+                        children: [
+                          const Text('Duration (ms): '),
+                          Expanded(
+                            child: Slider(
+                              value: _duration.toDouble(),
+                              min: 100.0,
+                              max: 10000.0,
+                              onChanged: (value) {
+                                setState(() {
+                                  _duration = value.toInt();
+                                });
+                              },
+                            ),
+                          ),
+                          Text(_duration.toString()),
+                        ],
+                      ),
+
+                      // Tone Control Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: _generateTone,
+                            child: const Text('Play Tone'),
+                          ),
+                          ElevatedButton(
+                            onPressed: _stopTone,
+                            child: const Text('Stop'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Sweep Generator Section
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Frequency Sweep',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Start Frequency Slider
+                      Row(
+                        children: [
+                          const Text('Start (Hz): '),
+                          Expanded(
+                            child: Slider(
+                              value: _startFrequency,
+                              min: 20.0,
+                              max: 20000.0,
+                              onChanged: (value) {
+                                setState(() {
+                                  _startFrequency = value;
+                                });
+                              },
+                            ),
+                          ),
+                          Text(_startFrequency.toStringAsFixed(1)),
+                        ],
+                      ),
+
+                      // End Frequency Slider
+                      Row(
+                        children: [
+                          const Text('End (Hz): '),
+                          Expanded(
+                            child: Slider(
+                              value: _endFrequency,
+                              min: 20.0,
+                              max: 20000.0,
+                              onChanged: (value) {
+                                setState(() {
+                                  _endFrequency = value;
+                                });
+                              },
+                            ),
+                          ),
+                          Text(_endFrequency.toStringAsFixed(1)),
+                        ],
+                      ),
+
+                      // Sweep Control Button
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: _generateSweep,
+                          child: const Text('Play Sweep'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Insect Repellent Section
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Insect Repellent Frequencies',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Insect Repellent Buttons
+                      Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children:
+                            _insectFrequencies.keys.map((insect) {
+                              return ElevatedButton(
+                                onPressed: () => _playInsectRepellent(insect),
+                                child: Text('Repel $insect'),
+                              );
+                            }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Status and Controls
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Status: ${_isPlaying ? "Playing" : "Stopped"}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: _isPlaying ? Colors.green : Colors.red,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      if (_isPlaying)
+                        ElevatedButton(
+                          onPressed: _stopTone,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('STOP ALL SOUNDS'),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
