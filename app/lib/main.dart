@@ -383,13 +383,13 @@ class _SynthPageState extends State<SynthPage> {
   double _endFrequency = 2000.0;
 
   // Predefined frequencies for repelling different insects
-  final Map<String, double> _insectFrequencies = {
-    'Mosquitoes': 18000.0,
-    'Flies': 15000.0,
-    'Cockroaches': 20000.0,
-    'Ants': 22000.0,
-    'Rodents': 25000.0,
-  };
+  // final Map<String, double> _insectFrequencies = {
+  //   'Mosquitoes': 18000.0,
+  //   'Flies': 15000.0,
+  //   'Cockroaches': 20000.0,
+  //   'Ants': 22000.0,
+  //   'Rodents': 25000.0,
+  // };
 
   @override
   void initState() {
@@ -478,37 +478,40 @@ class _SynthPageState extends State<SynthPage> {
     }
   }
 
-  Future<void> _playInsectRepellent(String insectType) async {
-    if (_isPlaying) {
-      await _stopTone();
-    }
+  // Future<void> _playInsectRepellent(String insectType) async {
+  //   if (_isPlaying) {
+  //     await _stopTone();
+  //   }
 
-    final frequency = _insectFrequencies[insectType] ?? 440.0;
+  //   final frequency = _insectFrequencies[insectType] ?? 440.0;
 
-    try {
-      final result = await _sonicFrequenciesPlugin.generateTone(
-        frequency: frequency,
-        volume: _volume,
-      );
+  //   try {
+  //     final result = await _sonicFrequenciesPlugin.generateTone(
+  //       frequency: frequency,
+  //       volume: _volume,
+  //     );
 
-      setState(() {
-        _isPlaying = result;
-        _frequency = frequency;
-      });
-    } on PlatformException catch (e) {
-      debugPrint('Error generating tone: ${e.message}');
-    }
-  }
+  //     setState(() {
+  //       _isPlaying = result;
+  //       _frequency = frequency;
+  //     });
+  //   } on PlatformException catch (e) {
+  //     debugPrint('Error generating tone: ${e.message}');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      theme: theme,
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Sonic Frequencies'),
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -542,7 +545,7 @@ class _SynthPageState extends State<SynthPage> {
                             child: Slider(
                               value: _frequency,
                               min: 20.0,
-                              max: 20000.0,
+                              max: 4000.0,
                               onChanged: (value) {
                                 setState(() {
                                   _frequency = value;
@@ -686,38 +689,37 @@ class _SynthPageState extends State<SynthPage> {
               const SizedBox(height: 20),
 
               // Insect Repellent Section
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Insect Repellent Frequencies',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
+              // Card(
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(16.0),
+              //     child: Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //         const Text(
+              //           'Insect Repellent Frequencies',
+              //           style: TextStyle(
+              //             fontSize: 18,
+              //             fontWeight: FontWeight.bold,
+              //           ),
+              //         ),
+              //         const SizedBox(height: 10),
 
-                      // Insect Repellent Buttons
-                      Wrap(
-                        spacing: 8.0,
-                        runSpacing: 8.0,
-                        children:
-                            _insectFrequencies.keys.map((insect) {
-                              return ElevatedButton(
-                                onPressed: () => _playInsectRepellent(insect),
-                                child: Text('Repel $insect'),
-                              );
-                            }).toList(),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
+              //         // Insect Repellent Buttons
+              //         Wrap(
+              //           spacing: 8.0,
+              //           runSpacing: 8.0,
+              //           children:
+              //               _insectFrequencies.keys.map((insect) {
+              //                 return ElevatedButton(
+              //                   onPressed: () => _playInsectRepellent(insect),
+              //                   child: Text('Repel $insect'),
+              //                 );
+              //               }).toList(),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
               const SizedBox(height: 20),
 
               // Status and Controls
@@ -730,7 +732,10 @@ class _SynthPageState extends State<SynthPage> {
                         'Status: ${_isPlaying ? "Playing" : "Stopped"}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: _isPlaying ? Colors.green : Colors.red,
+                          color:
+                              _isPlaying
+                                  ? colorScheme.primary
+                                  : colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -738,8 +743,8 @@ class _SynthPageState extends State<SynthPage> {
                         ElevatedButton(
                           onPressed: _stopTone,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
+                            backgroundColor: colorScheme.error,
+                            foregroundColor: colorScheme.onError,
                           ),
                           child: const Text('STOP ALL SOUNDS'),
                         ),
